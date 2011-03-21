@@ -110,8 +110,9 @@ function add( entry ) {
 		return;
 	}
 
-	// Always ensure a decent width is given
+	// Always ensure a visible width is given
 	if ( width < 5 ) {
+		startpos = startpos - 5 - width;
 		width = 5;
 	}
 
@@ -231,8 +232,8 @@ function position( time ) {
 		'Previous Unload',
 		'Time spent in previous pages unload event (has to be same origin)',
 		'#1C9C45',
-		timing.unloadStart,
-		timing.unloadEnd
+		timing.unloadEventStart,
+		timing.unloadEventEnd
 	]
 ].forEach( add );
 
