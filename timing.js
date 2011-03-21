@@ -18,6 +18,10 @@ var document = window.document,
 	navlist = document.createElement('ul'),
 	close = document.createElement('div'),
 
+	// Graph labels
+	startlabel = document.createElement('div'),
+	endlabel = document.createElement('div'),
+
 	// How you got to this page
 	how = navigation.type == navigation.TYPE_NAVIGATE ? 'Link follow or entered in URL bar' :
 		navigation.type == navigation.TYPE_RELOAD ? 'Refresh' :
@@ -36,7 +40,7 @@ var document = window.document,
 
 // Style the wrappers
 root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;z-index:999999;font-size:11px;top:25px;left:25px;background:white;box-shadow: 0 0 1em black;border-radius:5px;';
-graph.style.cssText = reset + 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;';
+graph.style.cssText = reset + 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;clear:both;';
 timelist.style.cssText = reset + 'list-style:none;margin:0;padding:0;';
 navlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;';
 close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radius:10px;' +
@@ -45,8 +49,19 @@ close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radi
 	'line-height:13px;background:red;text-align:center;cursor:pointer;';
 
 
+// Style the labels
+startlabel.style.cssText = reset + 'float:left;font-size:9px;';
+endlabel.style.cssText = reset + 'float:right;font-size:9px;';
+
+// Labels
+startlabel.innerHTML = 'Navigation Start (0ms)';
+endlabel.innerHTML = 'Load Event End (' + elapsed + 'ms)';
+
+
 // Add everything to the page
 document.body.appendChild( root );
+root.appendChild( startlabel );
+root.appendChild( endlabel );
 root.appendChild( graph );
 root.appendChild( timelist );
 root.appendChild( navlist );
@@ -57,7 +72,7 @@ root.appendChild( close );
 close.innerHTML = 'X';
 timelist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:15px;'>Timing Report</li>";
 navlist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:15px;'>Navigation Report</li>" +
-	"<li style='" + reset + "'>How they got here: <span style='" + reset + "color:blue;'>" + how + "</span></li>" +
+	"<li style='" + reset + "'>How you got here: <span style='" + reset + "color:blue;'>" + how + "</span></li>" +
 	"<li style='" + reset + "'>Number of Redirects: <span style='" + reset + "color:blue;'>" + navigation.redirectCount + "</span></li>";
 
 
