@@ -32,7 +32,7 @@ var document = window.document,
 	// graph markers
 	step = 0,
 	width = 500,
-	elapsed = timing.loadEventEnd - timing.navigationStart,
+	elapsed = timing.loadEventEnd - ( timing.navigationStart || timing.fetchStart ),
 
 	// Style resets
 	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align: baseline;color:inherit;line-height:inherit;color:black;';
@@ -140,8 +140,8 @@ function add( entry ) {
 	graph.appendChild( plot );
 	timelist.appendChild( row );
 
-	// Spread out entries ( only if they exist)
-	if ( length > 0 ) {
+	// Spread out entries (only if they exist, and skip previous unload)
+	if ( length > 0 && name != 'Previous Unload' ) {
 		step += 22;
 	}
 	else {
@@ -152,7 +152,7 @@ function add( entry ) {
 
 // Gives the position on the graph in pixels
 function position( time ) {
-	return ( ( time - timing.navigationStart ) / elapsed ) * width;
+	return ( ( time - ( timing.navigationStart || timing.fetchStart ) ) / elapsed ) * width;
 }
 
 
@@ -162,7 +162,7 @@ function position( time ) {
 		'Page Load',
 		'Full length of page load, includes redirects and onload events',
 		'#58DB46',
-		timing.navigationStart,
+		timing.navigationStart || timing.fetchStart,
 		timing.loadEventEnd
 	],
 	[
