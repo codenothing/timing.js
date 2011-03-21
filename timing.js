@@ -113,8 +113,14 @@ function add( entry ) {
 
 	// Always ensure a visible width is given
 	if ( width < 5 ) {
+		// Handle case where width overflows to the right
 		startpos = startpos - 5 - width;
 		width = 5;
+
+		// Handle case where width overflows to the left
+		if ( startpos < 0 ) {
+			startpos = 0;
+		}
 	}
 
 	// Detail the graph
@@ -129,7 +135,7 @@ function add( entry ) {
 	// Detail the data entry
 	row.innerHTML = "<span style='" + reset + "border:1px solid black;background:" + color + ";'>&nbsp;&nbsp;&nbsp;&nbsp;</span> " + name + ": <span style='" + reset + "color:blue;'>" + length + "ms</span>";
 	row.title = description;
-	row.style.cssText = reset + 'margin-top:3px;';
+	row.style.cssText = reset + 'padding:2px 0;';
 
 	// Add event listeners
 	plot.addEventListener( 'mouseover', enter, false );
@@ -157,7 +163,7 @@ function position( time ) {
 }
 
 
-// Add entries
+// Add entries based off spec @ http://w3c-test.org/webperf/specs/NavigationTiming/
 [
 	[
 		'Page Load',
