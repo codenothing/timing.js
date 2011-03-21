@@ -107,19 +107,17 @@ function add( entry ) {
 		};
 
 	// Handle case where no time is defined (usually unload)
-	if ( ! start || ! end ) {
+	if ( ! start || ! end || length < 0 ) {
 		return;
 	}
 
 	// Always ensure a visible width is given
 	if ( width < 5 ) {
-		// Handle case where width overflows to the right
-		startpos = startpos - 5 - width;
 		width = 5;
 
 		// Handle case where width overflows to the left
-		if ( startpos < 0 ) {
-			startpos = 0;
+		if ( startpos > elapsed ) {
+			startpos = startpos - 5 - width;
 		}
 	}
 
@@ -173,13 +171,6 @@ function position( time ) {
 		timing.loadEventEnd
 	],
 	[
-		'Page Resources',
-		'Resource loading (DNS lookups, TCP connections, resource fetching)',
-		'#46DBCA',
-		timing.fetchStart,
-		timing.responseEnd
-	],
-	[
 		'Redirects',
 		'Time spent in redirects',
 		'#7D46DB',
@@ -209,10 +200,17 @@ function position( time ) {
 	],
 	[
 		'Resource Content',
-		'Time spent from the first byte downlaoded, to the last byte',
+		'Time spent from the first byte downloaded, to the last byte',
 		'#8874DA',
 		timing.responseStart,
 		timing.responseEnd
+	],
+	[
+		'Resource Parsing', // TODO: Confirmation needed
+		'Time spent from end of resource download, to start of DOM Rendering',
+		'#46DBCA',
+		timing.responseEnd,
+		timing.domLoading
 	],
 	[
 		'DOM Rendering',
@@ -227,6 +225,13 @@ function position( time ) {
 		'#EE8905',
 		timing.domContentLoadedEventStart,
 		timing.domContentLoadedEventEnd
+	],
+	[
+		'DOM Render Complete',
+		'Time spent rendering after ready events',
+		'#FF007B',
+		timing.domContentLoadedEventEnd,
+		timing.domComplete
 	],
 	[
 		'On Load',
