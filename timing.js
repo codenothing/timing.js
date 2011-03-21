@@ -28,15 +28,18 @@ var document = window.document,
 	// graph markers
 	step = 0,
 	width = 500,
-	elapsed = timing.loadEventEnd - timing.navigationStart;
+	elapsed = timing.loadEventEnd - timing.navigationStart,
+
+	// Style resets
+	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align: baseline;color:inherit;line-height:inherit;color:black;';
 
 
 // Style the wrappers
-root.style.cssText = 'width:' + width + 'px;padding:10px;position:fixed;z-index:999999;font-size:11px;top:25px;left:25px;background:white;box-shadow: 0 0 1em black;border-radius:5px;';
-graph.style.cssText = 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;';
-timelist.style.cssText = 'list-style:none;margin:0;padding:0;';
-navlist.style.cssText = 'list-style:none;margin:10px 0 0;padding:0;';
-close.style.cssText = 'position:absolute;right:-7px;top:-7px;border-radius:10px;' +
+root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;z-index:999999;font-size:11px;top:25px;left:25px;background:white;box-shadow: 0 0 1em black;border-radius:5px;';
+graph.style.cssText = reset + 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;';
+timelist.style.cssText = reset + 'list-style:none;margin:0;padding:0;';
+navlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;';
+close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radius:10px;' +
 	'border:2px solid #f5f5f5;color:#f5f5f5;font-size:13px;' +
 	'font-weight:bold;height:12px;width:12px;padding:1px 0 1px 1px;' +
 	'line-height:13px;background:red;text-align:center;cursor:pointer;';
@@ -52,10 +55,10 @@ root.appendChild( close );
 
 // Add titles to the lists (and build up navlist, since it's direct)
 close.innerHTML = 'X';
-timelist.innerHTML = "<li style='font-weight:bold;font-size:15px;'>Timing Report</li>";
-navlist.innerHTML = "<li style='font-weight:bold;font-size:15px;'>Navigation Report</li>" +
-	"<li>How they got here: " + how + "</li>" +
-	"<li>Number of Redirects: " + navigation.redirectCount + "</li>";
+timelist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:15px;'>Timing Report</li>";
+navlist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:15px;'>Navigation Report</li>" +
+	"<li style='" + reset + "'>How they got here: <span style='" + reset + "color:blue;'>" + how + "</span></li>" +
+	"<li style='" + reset + "'>Number of Redirects: <span style='" + reset + "color:blue;'>" + navigation.redirectCount + "</span></li>";
 
 
 // Remove the graph from the page when closing
@@ -93,17 +96,18 @@ function add( entry ) {
 	}
 
 	// Detail the graph
-	plot.innerHTML = name + ': ' + length + 'ms';
+	plot.innerHTML =  length + 'ms: ' + name;
 	plot.title = description;
-	plot.style.cssText = 'background:' + color + ';text-align:center;position:absolute;' +
+	plot.style.cssText = reset + 'background:' + color + ';text-align:center;position:absolute;' +
 		'text-wrap:none;white-space:nowrap;line-height:20px;' +
 		'overflow:hidden;height:20px;font-size:13px;clear:both;' +
 		'border-radius:2px;' +
 		'top:' + step + 'px;left:' + startpos + 'px;width:' + width + 'px;';
 	
 	// Detail the data entry
-	row.innerHTML = name + ': ' + length + 'ms';
+	row.innerHTML = name + ": <span style='" + reset + "color:blue;'>" + length + "ms</span>";
 	row.title = description;
+	row.style.cssText = reset;
 
 	// Add event listeners
 	plot.addEventListener( 'mouseover', enter, false );
