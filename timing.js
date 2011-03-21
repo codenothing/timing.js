@@ -36,7 +36,7 @@ var document = window.document,
 	elapsed = timing.loadEventEnd - ( timing.navigationStart || timing.fetchStart ),
 
 	// Style resets
-	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:13px;font-family:inherit;vertical-align: baseline;color:inherit;line-height:12px;color:black;';
+	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:13px;font-family:inherit;vertical-align: baseline;color:inherit;line-height:13px;color:black;';
 
 
 // Style the wrappers
@@ -94,7 +94,8 @@ function add( entry ) {
 		end = entry[ 4 ] || 0,
 		length = end - start,
 		startpos = position( start ),
-		width = position( end ) - startpos,
+		endpos = position( end ),
+		barwidth = endpos - startpos,
 		plot = document.createElement('div'),
 		row = document.createElement('li'),
 		enter = function(){
@@ -112,12 +113,12 @@ function add( entry ) {
 	}
 
 	// Always ensure a visible width is given
-	if ( width < 5 ) {
-		width = 5;
+	if ( barwidth < 5 ) {
+		barwidth = 5;
 
 		// Handle case where width overflows to the left
-		if ( startpos > elapsed ) {
-			startpos = startpos - 5 - width;
+		if ( ( startpos + barwidth ) > width ) {
+			startpos -= ( startpos + barwidth ) - width;
 		}
 	}
 
@@ -128,7 +129,7 @@ function add( entry ) {
 		'text-wrap:none;white-space:nowrap;line-height:20px;' +
 		'overflow:hidden;height:20px;font-size:13px;clear:both;' +
 		'border-radius:2px;' +
-		'top:' + step + 'px;left:' + startpos + 'px;width:' + width + 'px;';
+		'top:' + step + 'px;left:' + startpos + 'px;width:' + barwidth + 'px;';
 	
 	// Detail the data entry
 	row.innerHTML = "<span style='" + reset + "border:1px solid black;background:" + color + ";'>&nbsp;&nbsp;&nbsp;&nbsp;</span> " + name + ": <span style='" + reset + "color:blue;'>" + length + "ms</span>";
