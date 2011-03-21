@@ -95,6 +95,11 @@ function add( entry ) {
 		return;
 	}
 
+	// Always ensure a decent width is given
+	if ( width < 5 ) {
+		width = 5;
+	}
+
 	// Detail the graph
 	plot.innerHTML =  length + 'ms: ' + name;
 	plot.title = description;
@@ -105,9 +110,9 @@ function add( entry ) {
 		'top:' + step + 'px;left:' + startpos + 'px;width:' + width + 'px;';
 	
 	// Detail the data entry
-	row.innerHTML = name + ": <span style='" + reset + "color:blue;'>" + length + "ms</span>";
+	row.innerHTML = "<span style='" + reset + "border:1px solid black;background:" + color + ";'>&nbsp;&nbsp;&nbsp;&nbsp;</span> " + name + ": <span style='" + reset + "color:blue;'>" + length + "ms</span>";
 	row.title = description;
-	row.style.cssText = reset;
+	row.style.cssText = reset + 'margin-top:3px;';
 
 	// Add event listeners
 	plot.addEventListener( 'mouseover', enter, false );
@@ -119,8 +124,13 @@ function add( entry ) {
 	graph.appendChild( plot );
 	timelist.appendChild( row );
 
-	// Spread out entries
-	step += 22;
+	// Spread out entries ( only if they exist)
+	if ( length > 0 ) {
+		step += 22;
+	}
+	else {
+		plot.style.display = 'none';
+	}
 }
 
 
@@ -191,7 +201,7 @@ function position( time ) {
 	[
 		'DOM Ready Event',
 		'Time spent waiting for dom ready events to finish',
-		'#4687DB',
+		'#EE8905',
 		timing.domContentLoadedEventStart,
 		timing.domContentLoadedEventEnd
 	],
