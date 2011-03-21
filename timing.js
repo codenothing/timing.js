@@ -29,9 +29,10 @@ var document = window.document,
 		navigation.type == navigation.TYPE_RESERVED ? 'Not defined by the browser' :
 		'God only knows',
 
-	// graph markers
+	// Markers
 	step = 0,
 	width = 500,
+	center = ( window.innerWidth / 2 ) - ( ( width + 20 ) / 2 ) - 20,
 	elapsed = timing.loadEventEnd - ( timing.navigationStart || timing.fetchStart ),
 
 	// Style resets
@@ -39,7 +40,7 @@ var document = window.document,
 
 
 // Style the wrappers
-root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;z-index:999999;font-size:11px;top:25px;left:25px;background:white;box-shadow: 0 0 1em black;border-radius:5px;';
+root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;z-index:999999;font-size:11px;top:25px;left:' + center + 'px;background:white;box-shadow: 0 0 1em black;border-radius:5px;';
 graph.style.cssText = reset + 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;clear:both;';
 timelist.style.cssText = reset + 'list-style:none;margin:0;padding:0;';
 navlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;';
