@@ -36,13 +36,13 @@ var document = window.document,
 	elapsed = timing.loadEventEnd - ( timing.navigationStart || timing.fetchStart ),
 
 	// Style resets
-	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align: baseline;color:inherit;line-height:inherit;color:black;';
+	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:13px;font-family:inherit;vertical-align: baseline;color:inherit;line-height:12px;color:black;';
 
 
 // Style the wrappers
 root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;z-index:999999;font-size:11px;top:25px;left:' + center + 'px;background:white;box-shadow: 0 0 1em black;border-radius:5px;';
 graph.style.cssText = reset + 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;clear:both;';
-timelist.style.cssText = reset + 'list-style:none;margin:0;padding:0;';
+timelist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;';
 navlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;';
 close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radius:10px;' +
 	'border:2px solid #f5f5f5;color:#f5f5f5;font-size:13px;' +
@@ -71,9 +71,9 @@ root.appendChild( close );
 
 // Add titles to the lists (and build up navlist, since it's direct)
 close.innerHTML = 'X';
-timelist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:15px;'>Timing Report</li>";
-navlist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:15px;'>Navigation Report</li>" +
-	"<li style='" + reset + "'>How you got here: <span style='" + reset + "color:blue;'>" + how + "</span></li>" +
+timelist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:18px;margin-bottom:4px;'>Timing Report</li>";
+navlist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:18px;margin-bottom:4px;'>Navigation Report</li>" +
+	"<li style='" + reset + "padding:2px 0 4px 0;'>How you got here: <span style='" + reset + "color:blue;'>" + how + "</span></li>" +
 	"<li style='" + reset + "'>Number of Redirects: <span style='" + reset + "color:blue;'>" + navigation.redirectCount + "</span></li>";
 
 
@@ -133,7 +133,7 @@ function add( entry ) {
 	// Detail the data entry
 	row.innerHTML = "<span style='" + reset + "border:1px solid black;background:" + color + ";'>&nbsp;&nbsp;&nbsp;&nbsp;</span> " + name + ": <span style='" + reset + "color:blue;'>" + length + "ms</span>";
 	row.title = description;
-	row.style.cssText = reset + 'padding:2px 0;';
+	row.style.cssText = reset + 'padding:4px 0;';
 
 	// Add event listeners
 	plot.addEventListener( 'mouseover', enter, false );
