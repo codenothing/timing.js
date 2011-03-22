@@ -1,11 +1,16 @@
 (function( window, undefined ) {
 
+// Block unsupporting browsers
 if ( ! window.performance || ! window.performance.timing ) {
 	return alert( "This browser doesn't support the timing module." );
 }
 
-// Externals
-var document = window.document,
+// Meta
+var version = '0.0.1',
+	date = '2011-03-21',
+
+	// Externals
+	document = window.document,
 	performance = window.performance,
 	timing = performance.timing,
 	navigation = performance.navigation,
@@ -18,7 +23,8 @@ var document = window.document,
 	navlist = document.createElement('ul'),
 	close = document.createElement('div'),
 
-	// Graph labels
+	// labels
+	header = document.createElement('h1'),
 	startlabel = document.createElement('div'),
 	endlabel = document.createElement('div'),
 
@@ -51,16 +57,19 @@ close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radi
 
 
 // Style the labels
+header.style.cssText = reset + 'font-size:21px;font-weight:bold;clear:both;margin-bottom:20px;';
 startlabel.style.cssText = reset + 'float:left;font-size:9px;';
 endlabel.style.cssText = reset + 'float:right;font-size:9px;';
 
-// Labels
+// Insert label text
+header.innerHTML = 'Timing.js v' + version;
 startlabel.innerHTML = 'Navigation Start (0ms)';
 endlabel.innerHTML = 'Load Event End (' + elapsed + 'ms)';
 
 
 // Add everything to the page
 document.body.appendChild( root );
+root.appendChild( header );
 root.appendChild( startlabel );
 root.appendChild( endlabel );
 root.appendChild( graph );
