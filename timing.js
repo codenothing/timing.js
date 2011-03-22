@@ -6,7 +6,7 @@ if ( ! window.performance || ! window.performance.timing ) {
 }
 
 // Meta
-var version = '0.0.1',
+var version = '0.0.1pre',
 	date = '2011-03-21',
 
 	// Externals
@@ -200,6 +200,13 @@ function position( time ) {
 		'#DB3543',
 		timing.connectStart,
 		timing.connectEnd
+	],
+	[
+		'Document Download', // TODO: Confirmation needed
+		'Time spent downloading the requested document from the server',
+		'#96C3CC',
+		timing.connectEnd,
+		timing.requestStart
 	],
 	[
 		'Resources',
