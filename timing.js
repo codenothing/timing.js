@@ -11,6 +11,7 @@ var version = '0.0.1pre',
 
 	// Externals
 	document = window.document,
+	console = window.console,
 	performance = window.performance,
 	timing = performance.timing,
 	navigation = performance.navigation,
@@ -42,11 +43,15 @@ var version = '0.0.1pre',
 	elapsed = timing.loadEventEnd - ( timing.navigationStart || timing.fetchStart ),
 
 	// Style resets
-	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:13px;font-family:inherit;vertical-align: baseline;color:inherit;line-height:13px;color:black;';
+	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;' +
+		'font-style:inherit;font-size:13px;font-family:inherit;' +
+		'vertical-align:baseline;color:inherit;line-height:13px;color:black;';
 
 
 // Style the wrappers
-root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;z-index:999999;font-size:11px;top:25px;left:' + center + 'px;background:white;box-shadow: 0 0 1em black;border-radius:5px;';
+root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;' +
+	'z-index:999999;font-size:11px;top:25px;left:' + center + 'px;' +
+	'background:white;box-shadow: 0 0 1em black;border-radius:5px;';
 graph.style.cssText = reset + 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;clear:both;';
 timelist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;';
 navlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;';
@@ -155,6 +160,9 @@ function add( entry ) {
 	graph.appendChild( plot );
 	timelist.appendChild( row );
 
+	// Log results into the console
+	console.info( name + ' (' + description + '): ' + length + 'ms' );
+
 	// Spread out entries (only if they exist, and skip previous unload)
 	if ( length > 0 && name != 'Previous Unload' ) {
 		step += 22;
@@ -172,6 +180,7 @@ function position( time ) {
 
 
 // Add entries based off spec @ http://w3c-test.org/webperf/specs/NavigationTiming/
+console.info( '---Performance Timing Statistics---' );
 [
 	[
 		'Page Load',
@@ -268,5 +277,14 @@ function position( time ) {
 
 // Extend the grap the full length
 graph.style.height = step + 'px';
+
+// Log the navigation results AFTER timing results
+console.info( '---Navigation Report---' );
+console.info( 'How you got here: ' + how );
+console.info( 'Number of Redriects: ' + navigation.redirectCount );
+
+// For your viewing pleasure
+console.info( '---Performance Object---' );
+console.info( performance );
 
 })( this );
