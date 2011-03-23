@@ -271,6 +271,9 @@ var version = '0.0.1pre',
 		navigation.type == navigation.TYPE_RESERVED ? 'Not defined by the browser' :
 		'God only knows',
 
+	// Storable reports object
+	reports = { timing: {}, events: {}, nav: { how: how, redirects: navigation.redirectCount } },
+
 	// Markers
 	step = 0,
 	width = 500,
@@ -399,11 +402,15 @@ markers.forEach(function( entry ) {
 			plot.style.backgroundColor = color;
 			row.style.backgroundColor = 'transparent';
 		};
+	
 
-	// Handle case where no time is defined (usually unload)
+	// Handle case where no time is defined (usually unload|redirects)
 	if ( ! start || ! end || length < 0 ) {
 		return;
 	}
+
+	// Stash length of marker for reporting
+	reports.timing[ name ] = length;
 
 	// Always ensure a visible width is given
 	if ( barwidth < 5 ) {
@@ -459,6 +466,10 @@ markers.forEach(function( entry ) {
 	order.forEach(function( entry ) {
 		var name = entry[ 0 ];
 
+		// Store timestamp for reporting
+		reports.events[ name ] = timing[ name ];
+
+		// Push onto appropiate stack
 		if ( ! timing[ name ] ) {
 			undef.push( entry );
 		}
@@ -575,6 +586,10 @@ order.forEach(function( entry ) {
 console.info( '---Navigation Report---' );
 console.info( 'How you got here: ' + how );
 console.info( 'Number of Redriects: ' + navigation.redirectCount );
+
+console.info( '---Timing.js Report---' );
+console.info( JSON.stringify( reports ) );
+console.info( reports );
 
 // For your viewing pleasure
 console.info( '---Performance Object---' );
