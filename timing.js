@@ -301,7 +301,7 @@ close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radi
 
 // Style & build the overlay
 overlay.style.cssText = reset + 'position:absolute;border-left:1px solid #E0FA5D;top:0px;z-index:100001;display:none;';
-overlayText.style.cssText = reset + 'position:absolute;top:0px;z-index:100002;padding:3px 8px;' +
+overlayText.style.cssText = reset + 'position:absolute;top:0px;z-index:100002;padding:3px 8px;font-weight:bold;' +
 	'font-size:11px;background:#E0FA5D;white-space:nowrap;display:none;';
 graph.appendChild( overlay );
 graph.appendChild( overlayText );
@@ -490,7 +490,7 @@ order.forEach(function( entry ) {
 		enter = function(){
 			list.style.backgroundColor = '#E0FA5D';
 
-			// Only open overlay if the entry exists
+			// Only expand overlay if the entry exists
 			if ( timing[ name ] && overlayHold ) {
 				if ( overlayHold.pos === pos ) {
 					return;
@@ -516,6 +516,7 @@ order.forEach(function( entry ) {
 					overlayText.style.left = Math.min( pos, overlayHold.pos ) + 'px';
 				}
 			}
+			// Only expose overlay if entry exists
 			else if ( timing[ name ] ) {
 				overlayText.innerHTML = time + 'ms - ' + name;
 				overlay.style.display = overlayText.style.display = 'block';
