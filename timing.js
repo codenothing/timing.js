@@ -391,14 +391,15 @@ order.forEach(function( name ) {
 					return;
 				}
 				overlay.style.display = overlayText.style.display = 'block';
-				overlay.style.borderRight = overlay.style.borderLeft = '1px solid #E0FA5D';
-				overlay.style.width = ( Math.abs( pos - overlayHold.pos ) - 2 ) + 'px';
+				overlay.style.width = Math.abs( pos - overlayHold.pos ) + 'px';
 				overlay.style.left = overlayText.style.left = Math.min( pos, overlayHold.pos ) + 'px';
 				overlay.style.opacity = 0.5;
 				overlay.style.backgroundColor = '#E0FA5D';
 
-				// Overlay text
-				overlayText.innerHTML = Math.abs( time - overlayHold.time ) + 'ms: ' + name + ' - ' + overlayHold.name;
+				
+				overlayText.innerHTML = time > overlayHold.time ?
+					( time - overlayHold.time ) + 'ms: ' + overlayHold.name + '-' + name :
+					( overlayHold.time - time ) + 'ms: ' + name + ' - ' + overlayHold.name;
 
 				// Positioning the overlay text
 				if ( ( overlayHold.pos / width ) > 0.5 ) {
