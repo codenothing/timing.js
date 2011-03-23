@@ -14,40 +14,111 @@ var version = '0.0.1pre',
 	timing = performance.timing,
 	navigation = performance.navigation,
 	memory = performance.memory,
+	NAV_START = timing.navigationStart || timing.fetchStart,
 
 	// Order of timing events
 	order = [
-		'navigationStart',
-		'redirectStart',
-		'redirectEnd',
-		'fetchStart',
-		'domainLookupStart',
-		'domainLookupEnd',
-		'connectStart',
-		'secureConnectionStart',
-		'connectEnd',
-		'requestStart',
-		'responseStart',
-		'unloadEventStart',
-		'unloadEventEnd',
-		'domLoading',
-		'responseEnd',
-		'domInteractive',
-		'domContentLoadedEventStart',
-		'domContentLoadedEventEnd',
-		'domComplete',
-		'loadEventStart',
-		'loadEventEnd'
+		[
+			'navigationStart',
+			'????'
+		],
+		[
+			'redirectStart',
+			'????'
+		],
+		[
+			'redirectEnd',
+			'????'
+		],
+		[
+			'fetchStart',
+			'????'
+		],
+		[
+			'domainLookupStart',
+			'????'
+		],
+		[
+			'domainLookupEnd',
+			'????'
+		],
+		[
+			'connectStart',
+			'????'
+		],
+		[
+			'secureConnectionStart',
+			'????'
+		],
+		[
+			'connectEnd',
+			'????'
+		],
+		[
+			'requestStart',
+			'????'
+		],
+		[
+			'responseStart',
+			'????'
+		],
+		[
+			'unloadEventStart',
+			'????'
+		],
+		[
+			'unloadEventEnd',
+			'????'
+		],
+		[
+			'domLoading',
+			'????'
+		],
+		[
+			'responseEnd',
+			'????'
+		],
+		[
+			'domInteractive',
+			'????'
+		],
+		[
+			'domContentLoadedEventStart',
+			'????'
+		],
+		[
+			'domContentLoadedEventEnd',
+			'????'
+		],
+		[
+			'domComplete',
+			'????'
+		],
+		[
+			'loadEventStart',
+			'????'
+		],
+		[
+			'loadEventEnd',
+			'????'
+		]
 	],
 
 	// Various markers to plot
 	markers = [
 		[
 			'Page Load',
-			'Full length of page load, includes redirects and onload events',
+			'Full length of page load',
 			'#58DB46',
-			timing.navigationStart || timing.fetchStart,
+			NAV_START,
 			timing.loadEventEnd
+		],
+		[
+			'??navigationStart - redirectStart??',
+			'????',
+			'#CFCFCF',
+			timing.navigationStart,
+			timing.redirectStart
 		],
 		[
 			'Redirects',
@@ -55,6 +126,62 @@ var version = '0.0.1pre',
 			'#7D46DB',
 			timing.redirectStart,
 			timing.redirectEnd
+		],
+		[
+			'??redirectEnd - fetchStart??',
+			'????',
+			'#CFCFCF',
+			timing.redirectEnd,
+			timing.fetchStart
+		],
+		[
+			'??fetchStart - domainLookupStart??',
+			'????',
+			'#CFCFCF',
+			timing.fetchStart,
+			timing.domainLookupStart
+		],
+		[
+			'DNS Lookup',
+			'Time spent doing DNS lookup',
+			'#E271D9',
+			timing.domainLookupStart,
+			timing.domainLookupEnd
+		],
+		[
+			'??domainLookupEnd - connectStart??',
+			'????',
+			'#CFCFCF',
+			timing.domainLookupEnd,
+			timing.connectStart
+		],
+		[
+			'TCP Connections',
+			'Time spent in TCP connections',
+			'#DB3543',
+			timing.connectStart,
+			timing.connectEnd
+		],
+		[
+			'Secure TCP Connections (SSL)',
+			'Time spent in Secure TCP connections',
+			'#8874DA',
+			timing.secureConnectionStart,
+			timing.connectEnd
+		],
+		[
+			'??connectEnd - requestStart??',
+			'????',
+			'#CFCFCF',
+			timing.connectEnd,
+			timing.requestStart
+		],
+		[
+			'??requestStart - responseEnd??',
+			'????',
+			'#CFCFCF',
+			timing.requestStart,
+			timing.responseEnd
 		],
 		// TODO: Pin down when previous unload occurs
 		[
@@ -65,44 +192,9 @@ var version = '0.0.1pre',
 			timing.unloadEventEnd
 		],
 		[
-			'DNS Lookup',
-			'Time spent doing DNS lookup',
-			'#E271D9',
-			timing.domainLookupStart,
-			timing.domainLookupEnd
-		],
-		[
-			'TCP Connections',
-			'Time spent in TCP connections',
-			'#DB3543',
-			timing.connectStart,
-			timing.connectEnd
-		],
-		[
-			'Document Download', // TODO: Confirmation needed
-			'Time spent downloading the requested document from the server',
-			'#96C3CC',
-			timing.connectEnd,
-			timing.requestStart
-		],
-		[
-			'Resources',
-			'Time spent getting page resources',
+			'??responseEnd - domLoading??',
+			'????',
 			'#CFCFCF',
-			timing.requestStart,
-			timing.responseEnd
-		],
-		[
-			'Resource Content',
-			'Time spent from the first byte downloaded, to the last byte',
-			'#8874DA',
-			timing.responseStart,
-			timing.responseEnd
-		],
-		[
-			'Resource Parsing', // TODO: Confirmation needed
-			'Time spent from end of resource download, to start of DOM Rendering',
-			'#46DBCA',
 			timing.responseEnd,
 			timing.domLoading
 		],
@@ -128,11 +220,18 @@ var version = '0.0.1pre',
 			timing.domContentLoadedEventEnd
 		],
 		[
-			'DOM Render Complete',
-			'Time spent rendering after ready events',
+			'DOM Complete',
+			'Time spent between end of DOM Ready Event and "complete" dom readiness',
 			'#FF007B',
 			timing.domContentLoadedEventEnd,
 			timing.domComplete
+		],
+		[
+			'??domComplete - loadEventStart??',
+			'????',
+			'#CFCFCF',
+			timing.domComplete,
+			timing.loadEventStart
 		],
 		[
 			'On Load',
@@ -176,7 +275,7 @@ var version = '0.0.1pre',
 	step = 0,
 	width = 500,
 	center = ( window.innerWidth / 2 ) - ( ( width + 20 ) / 2 ) - 20,
-	elapsed = timing.loadEventEnd - ( timing.navigationStart || timing.fetchStart ),
+	elapsed = timing.loadEventEnd - NAV_START,
 
 	// Style resets
 	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;width:auto;' +
@@ -274,8 +373,9 @@ document.addEventListener( 'keyup', escapeKey, false );
 
 // Gives the position on the graph in pixels
 function position( time ) {
-	return ( ( time - ( timing.navigationStart || timing.fetchStart ) ) / elapsed ) * width;
+	return ( ( time - NAV_START ) / elapsed ) * width;
 }
+
 
 // Add entries based off spec @ http://w3c-test.org/webperf/specs/NavigationTiming/
 console.info( '---Performance Timing Statistics---' );
@@ -356,21 +456,23 @@ markers.forEach(function( entry ) {
 	var undef = [], start = [], exists = [];
 
 	// Separate each event into it's respective category
-	order.forEach(function( name ) {
+	order.forEach(function( entry ) {
+		var name = entry[ 0 ];
+
 		if ( ! timing[ name ] ) {
-			undef.push( name );
+			undef.push( entry );
 		}
-		else if ( timing[ name ] == ( timing.navigationStart || timing.fetchStart ) ) {
-			start.push( name );
+		else if ( timing[ name ] == NAV_START ) {
+			start.push( entry );
 		}
 		else {
-			exists.push( name );
+			exists.push( entry );
 		}
 	});
 
 	// Ensure existing stack is sorted in ascending order
 	exists.sort(function( a, b ) {
-		return timing[ a ] - timing[ b ];
+		return timing[ a[ 0 ] ] - timing[ b[ 0 ] ];
 	});
 
 	// Reapply order
@@ -378,9 +480,12 @@ markers.forEach(function( entry ) {
 })();
 
 // List out event report
-order.forEach(function( name ) {
+console.info( '---Event Reporting---' );
+order.forEach(function( entry ) {
 	var list = document.createElement('li'),
-		time = timing[ name ] - ( timing.navigationStart || timing.fetchStart ),
+		name = entry[ 0 ],
+		description = entry[ 1 ],
+		time = timing[ name ] - NAV_START,
 		pos = position( timing[ name ] || 0 ),
 		enter = function(){
 			list.style.backgroundColor = '#E0FA5D';
@@ -450,6 +555,7 @@ order.forEach(function( name ) {
 
 	// Add to the event list
 	list.style.cssText = reset + 'font-size:12px;' + ( timing[ name ] ? 'cursor:pointer;' : '' );
+	list.title = description;
 	list.innerHTML = timing[ name ] ?
 		time + 'ms - ' + name :
 		"<span style='" + reset + "font-style:italic;font-size:12px;'>undefined - " + name + "</span>";
@@ -459,6 +565,9 @@ order.forEach(function( name ) {
 	list.addEventListener( 'click', click, false );
 	list.addEventListener( 'mouseover', enter, false );
 	list.addEventListener( 'mouseout', leave, false );
+
+	// Log to the console
+	console.info( '[' + timing[ name ] + '] ' + name + ' - ' + description );
 });
 
 // Log the navigation results AFTER timing results
