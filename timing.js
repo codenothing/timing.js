@@ -9,13 +9,143 @@ if ( ! window.performance || ! window.performance.timing ) {
 var version = '0.0.1pre',
 	date = '2011-03-21',
 
-	// Externals
-	document = window.document,
-	console = window.console,
+	// Perf Shortcuts
 	performance = window.performance,
 	timing = performance.timing,
 	navigation = performance.navigation,
 	memory = performance.memory,
+
+	// Order of timing events
+	order = [
+		'navigationStart',
+		'redirectStart',
+		'redirectEnd',
+		'fetchStart',
+		'domainLookupStart',
+		'domainLookupEnd',
+		'connectStart',
+		'secureConnectionStart',
+		'connectEnd',
+		'requestStart',
+		'responseStart',
+		'unloadEventStart',
+		'unloadEventEnd',
+		'domLoading',
+		'responseEnd',
+		'domContentLoadedEventStart',
+		'domInteractive',
+		'domContentLoadedEventEnd',
+		'domComplete',
+		'loadEventStart',
+		'loadEventEnd'
+	],
+
+	// Various markers to plot
+	markers = [
+		[
+			'Page Load',
+			'Full length of page load, includes redirects and onload events',
+			'#58DB46',
+			timing.navigationStart || timing.fetchStart,
+			timing.loadEventEnd
+		],
+		[
+			'Redirects',
+			'Time spent in redirects',
+			'#7D46DB',
+			timing.redirectStart,
+			timing.redirectEnd
+		],
+		// TODO: Pin down when previous unload occurs
+		[
+			'Previous Unload',
+			'Time spent in previous pages unload event (has to be same origin)',
+			'#1C9C45',
+			timing.unloadEventStart,
+			timing.unloadEventEnd
+		],
+		[
+			'DNS Lookup',
+			'Time spent doing DNS lookup',
+			'#E271D9',
+			timing.domainLookupStart,
+			timing.domainLookupEnd
+		],
+		[
+			'TCP Connections',
+			'Time spent in TCP connections',
+			'#DB3543',
+			timing.connectStart,
+			timing.connectEnd
+		],
+		[
+			'Document Download', // TODO: Confirmation needed
+			'Time spent downloading the requested document from the server',
+			'#96C3CC',
+			timing.connectEnd,
+			timing.requestStart
+		],
+		[
+			'Resources',
+			'Time spent getting page resources',
+			'#CFCFCF',
+			timing.requestStart,
+			timing.responseEnd
+		],
+		[
+			'Resource Content',
+			'Time spent from the first byte downloaded, to the last byte',
+			'#8874DA',
+			timing.responseStart,
+			timing.responseEnd
+		],
+		[
+			'Resource Parsing', // TODO: Confirmation needed
+			'Time spent from end of resource download, to start of DOM Rendering',
+			'#46DBCA',
+			timing.responseEnd,
+			timing.domLoading
+		],
+		[
+			'DOM Loading',
+			'Time spent between "loading" and "complete" dom readiness',
+			'#047EC5',
+			timing.domLoading,
+			timing.domComplete
+		],
+		[
+			'DOM Interactive',
+			'Time spent between "loading" and "interactive" dom readiness',
+			'#047EC5',
+			timing.domLoading,
+			timing.domInteractive
+		],
+		[
+			'DOM Ready Event',
+			'Time spent waiting for dom ready events to finish',
+			'#EE8905',
+			timing.domContentLoadedEventStart,
+			timing.domContentLoadedEventEnd
+		],
+		[
+			'DOM Render Complete',
+			'Time spent rendering after ready events',
+			'#FF007B',
+			timing.domContentLoadedEventEnd,
+			timing.domComplete
+		],
+		[
+			'On Load',
+			'Time spent waiting for the onload event to finish',
+			'#22837B',
+			timing.loadEventStart,
+			timing.loadEventEnd
+		]
+	],
+
+	// Externals
+	document = window.document,
+	console = window.console,
 
 	// wrappers
 	root = document.createElement('div'),
@@ -46,32 +176,8 @@ var version = '0.0.1pre',
 	// Style resets
 	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;' +
 		'font-style:inherit;font-size:13px;font-family:inherit;' +
-		'vertical-align:baseline;color:inherit;line-height:13px;color:black;',
+		'vertical-align:baseline;color:inherit;line-height:13px;color:black;';
 
-	// Order of timing events
-	order = [
-		'navigationStart',
-		'redirectStart',
-		'redirectEnd',
-		'fetchStart',
-		'domainLookupStart',
-		'domainLookupEnd',
-		'connectStart',
-		'secureConnectionStart',
-		'connectEnd',
-		'requestStart',
-		'responseStart',
-		'unloadEventStart',
-		'unloadEventEnd',
-		'domLoading',
-		'responseEnd',
-		'domContentLoadedEventStart',
-		'domInteractive',
-		'domContentLoadedEventEnd',
-		'domComplete',
-		'loadEventStart',
-		'loadEventEnd'
-	];
 
 
 // Style the wrappers
@@ -142,8 +248,14 @@ close.onclick = remove;
 root.onclick = eventBlock;
 document.addEventListener( 'click', remove, false );
 
-// Adds timing entries to graph and data list
-function add( entry ) {
+// Gives the position on the graph in pixels
+function position( time ) {
+	return ( ( time - ( timing.navigationStart || timing.fetchStart ) ) / elapsed ) * width;
+}
+
+// Add entries based off spec @ http://w3c-test.org/webperf/specs/NavigationTiming/
+console.info( '---Performance Timing Statistics---' );
+markers.forEach(function( entry ) {
 	var name = entry[ 0 ],
 		description = entry[ 1 ],
 		color = entry[ 2 ],
@@ -213,124 +325,14 @@ function add( entry ) {
 	else {
 		plot.style.display = 'none';
 	}
-}
-
-
-// Gives the position on the graph in pixels
-function position( time ) {
-	return ( ( time - ( timing.navigationStart || timing.fetchStart ) ) / elapsed ) * width;
-}
-
-
-// Add entries based off spec @ http://w3c-test.org/webperf/specs/NavigationTiming/
-console.info( '---Performance Timing Statistics---' );
-[
-	[
-		'Page Load',
-		'Full length of page load, includes redirects and onload events',
-		'#58DB46',
-		timing.navigationStart || timing.fetchStart,
-		timing.loadEventEnd
-	],
-	[
-		'Redirects',
-		'Time spent in redirects',
-		'#7D46DB',
-		timing.redirectStart,
-		timing.redirectEnd
-	],
-	// TODO: Pin down when previous unload occurs
-	[
-		'Previous Unload',
-		'Time spent in previous pages unload event (has to be same origin)',
-		'#1C9C45',
-		timing.unloadEventStart,
-		timing.unloadEventEnd
-	],
-	[
-		'DNS Lookup',
-		'Time spent doing DNS lookup',
-		'#E271D9',
-		timing.domainLookupStart,
-		timing.domainLookupEnd
-	],
-	[
-		'TCP Connections',
-		'Time spent in TCP connections',
-		'#DB3543',
-		timing.connectStart,
-		timing.connectEnd
-	],
-	[
-		'Document Download', // TODO: Confirmation needed
-		'Time spent downloading the requested document from the server',
-		'#96C3CC',
-		timing.connectEnd,
-		timing.requestStart
-	],
-	[
-		'Resources',
-		'Time spent getting page resources',
-		'#CFCFCF',
-		timing.requestStart,
-		timing.responseEnd
-	],
-	[
-		'Resource Content',
-		'Time spent from the first byte downloaded, to the last byte',
-		'#8874DA',
-		timing.responseStart,
-		timing.responseEnd
-	],
-	[
-		'Resource Parsing', // TODO: Confirmation needed
-		'Time spent from end of resource download, to start of DOM Rendering',
-		'#46DBCA',
-		timing.responseEnd,
-		timing.domLoading
-	],
-	[
-		'DOM Loading',
-		'Time spent between "loading" and "complete" dom readiness',
-		'#047EC5',
-		timing.domLoading,
-		timing.domComplete
-	],
-	[
-		'DOM Interactive',
-		'Time spent between "loading" and "interactive" dom readiness',
-		'#047EC5',
-		timing.domLoading,
-		timing.domInteractive
-	],
-	[
-		'DOM Ready Event',
-		'Time spent waiting for dom ready events to finish',
-		'#EE8905',
-		timing.domContentLoadedEventStart,
-		timing.domContentLoadedEventEnd
-	],
-	[
-		'DOM Render Complete',
-		'Time spent rendering after ready events',
-		'#FF007B',
-		timing.domContentLoadedEventEnd,
-		timing.domComplete
-	],
-	[
-		'On Load',
-		'Time spent waiting for the onload event to finish',
-		'#22837B',
-		timing.loadEventStart,
-		timing.loadEventEnd
-	]
-].forEach( add );
+});
 
 // List out event report
 order.forEach(function( name ) {
 	var list = document.createElement('li'),
 		pos = timing[ name ] - ( timing.navigationStart || timing.fetchStart );
 
+	// Add to the event list
 	list.style.cssText = reset + 'font-size:12px;';
 	list.innerHTML = timing[ name ] ?
 		pos + 'ms - ' + name :
