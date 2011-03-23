@@ -155,6 +155,10 @@ var version = '0.0.1pre',
 	navlist = document.createElement('ul'),
 	close = document.createElement('div'),
 
+	// Overlay for eventlist
+	overlay = document.createElement('div'),
+	overlayText = document.createElement('span'),
+
 	// labels
 	header = document.createElement('h1'),
 	startlabel = document.createElement('div'),
@@ -182,7 +186,7 @@ var version = '0.0.1pre',
 
 // Style the wrappers
 root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;' +
-	'z-index:999999;font-size:11px;top:25px;left:' + center + 'px;' +
+	'z-index:100000;font-size:11px;top:25px;left:' + center + 'px;' +
 	'background:white;box-shadow: 0 0 1em black;border-radius:5px;';
 graph.style.cssText = reset + 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;clear:both;';
 timelist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;float:left;width:48%';
@@ -192,6 +196,13 @@ close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radi
 	'border:2px solid #f5f5f5;color:#f5f5f5;font-size:13px;' +
 	'font-weight:bold;height:12px;width:12px;padding:1px 0 1px 1px;' +
 	'line-height:13px;background:red;text-align:center;cursor:pointer;';
+
+
+// Style & build the overlay
+overlay.style.cssText = reset + 'position:absolute;border-left:1px solid #E0FA5D;top:0px;left:10px;z-index:100001;display:none;';
+overlayText.style.cssText = reset + 'float:left;padding:3px 8px;font-size:11px;background:#E0FA5D;white-space:nowrap;';
+overlay.appendChild( overlayText );
+graph.appendChild( overlay );
 
 
 // Style the labels
@@ -330,7 +341,37 @@ markers.forEach(function( entry ) {
 // List out event report
 order.forEach(function( name ) {
 	var list = document.createElement('li'),
-		pos = timing[ name ] - ( timing.navigationStart || timing.fetchStart );
+		pos = timing[ name ] - ( timing.navigationStart || timing.fetchStart ),
+		enter = function(){
+			list.style.backgroundColor = '#E0FA5D';
+
+			// Only open overlay if the entry exists
+			if ( timing[ name ] ) {
+				var mark = position( timing[ name ] );
+				overlayText.innerHTML = pos + 'ms - ' + name;
+				overlay.style.display = 'block';
+
+				if ( ( mark / width ) > 0.5 ) {
+					overlay.style.left = 'auto';
+					overlay.style.right = ( width - mark ) + 'px';
+					overlay.style.borderLeft = 'none';
+					overlay.style.borderRight = '1px solid #E0FA5D';
+					overlayText.style.float = 'right';
+					overlayText.style.textAlign = 'right';
+				}
+				else {
+					overlay.style.left = mark + 'px';
+					overlay.style.borderRight = 'none';
+					overlay.style.borderLeft = '1px solid #E0FA5D';
+					overlayText.style.float = 'left';
+					overlayText.style.textAlign = 'left';
+				}
+			}
+		},
+		leave = function(){
+			list.style.backgroundColor = 'transparent';
+			overlay.style.display = 'none';
+		};
 
 	// Add to the event list
 	list.style.cssText = reset + 'font-size:12px;';
@@ -338,6 +379,10 @@ order.forEach(function( name ) {
 		pos + 'ms - ' + name :
 		"<span style='" + reset + "font-style:italic;font-size:12px;'>undefined - " + name + "</span>";
 	eventlist.appendChild( list );
+
+	// Attach hover effects
+	list.addEventListener( 'mouseover', enter, false );
+	list.addEventListener( 'mouseout', leave, false );
 });
 
 // Log the navigation results AFTER timing results
@@ -351,5 +396,6 @@ console.info( performance );
 
 // Extend the grap the full length
 graph.style.height = step + 'px';
+overlay.style.height = step + 'px';
 
 })( this );
