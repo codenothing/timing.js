@@ -243,7 +243,15 @@ function remove( event ) {
 	if ( root ) {
 		document.body.removeChild( root );
 		document.removeEventListener( 'click', remove, false );
+		document.removeEventListener( 'keyup', escapeKey, false );
 		eventBlock( event );
+	}
+}
+
+// Close report on escape key
+function escapeKey( event ) {
+	if ( event.keyCode == 27 ) {
+		remove( event );
 	}
 }
 
@@ -258,6 +266,7 @@ function eventBlock( event ) {
 close.onclick = remove;
 root.onclick = eventBlock;
 document.addEventListener( 'click', remove, false );
+document.addEventListener( 'keyup', escapeKey, false );
 
 // Gives the position on the graph in pixels
 function position( time ) {
@@ -337,6 +346,32 @@ markers.forEach(function( entry ) {
 		plot.style.display = 'none';
 	}
 });
+
+// We have to ensure organization of events is correct (unload is tricky)
+(function(){
+	var undef = [], start = [], exists = [];
+
+	// Separate each event into it's respective category
+	order.forEach(function( name ) {
+		if ( ! timing[ name ] ) {
+			undef.push( name );
+		}
+		else if ( timing[ name ] == ( timing.navigationStart || timing.fetchStart ) ) {
+			start.push( name );
+		}
+		else {
+			exists.push( name );
+		}
+	});
+
+	// Ensure existing stack is sorted in ascending order
+	exists.sort(function( a, b ) {
+		return timing[ a ] - timing[ b ];
+	});
+
+	// Reapply order
+	order = undef.concat( start, exists );
+})();
 
 // List out event report
 order.forEach(function( name ) {
