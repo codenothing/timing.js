@@ -365,11 +365,9 @@ markers.forEach(function( entry ) {
 	});
 
 	// Ensure existing stack is sorted in ascending order
-	/* Disabling for now, need to find a safe way to sort
 	exists.sort(function( a, b ) {
 		return timing[ a ] - timing[ b ];
 	});
-	*/
 
 	// Reapply order
 	order = undef.concat( start, exists );
