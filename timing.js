@@ -21,6 +21,7 @@ var version = '0.0.1pre',
 	root = document.createElement('div'),
 	graph = document.createElement('div'),
 	timelist = document.createElement('ul'),
+	eventlist = document.createElement('ul'),
 	navlist = document.createElement('ul'),
 	close = document.createElement('div'),
 
@@ -45,7 +46,32 @@ var version = '0.0.1pre',
 	// Style resets
 	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;' +
 		'font-style:inherit;font-size:13px;font-family:inherit;' +
-		'vertical-align:baseline;color:inherit;line-height:13px;color:black;';
+		'vertical-align:baseline;color:inherit;line-height:13px;color:black;',
+
+	// Order of timing events
+	order = [
+		'navigationStart',
+		'redirectStart',
+		'redirectEnd',
+		'fetchStart',
+		'domainLookupStart',
+		'domainLookupEnd',
+		'connectStart',
+		'secureConnectionStart',
+		'connectEnd',
+		'requestStart',
+		'responseStart',
+		'unloadEventStart',
+		'unloadEventEnd',
+		'domLoading',
+		'responseEnd',
+		'domContentLoadedEventStart',
+		'domInteractive',
+		'domContentLoadedEventEnd',
+		'domComplete',
+		'loadEventStart',
+		'loadEventEnd'
+	];
 
 
 // Style the wrappers
@@ -53,8 +79,9 @@ root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;
 	'z-index:999999;font-size:11px;top:25px;left:' + center + 'px;' +
 	'background:white;box-shadow: 0 0 1em black;border-radius:5px;';
 graph.style.cssText = reset + 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;clear:both;';
-timelist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;';
-navlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;';
+timelist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;float:left;width:48%';
+eventlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;float:left;width:51%;';
+navlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;clear:both;';
 close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radius:10px;' +
 	'border:2px solid #f5f5f5;color:#f5f5f5;font-size:13px;' +
 	'font-weight:bold;height:12px;width:12px;padding:1px 0 1px 1px;' +
@@ -79,6 +106,7 @@ root.appendChild( startlabel );
 root.appendChild( endlabel );
 root.appendChild( graph );
 root.appendChild( timelist );
+root.appendChild( eventlist );
 root.appendChild( navlist );
 root.appendChild( close );
 
@@ -86,18 +114,33 @@ root.appendChild( close );
 // Add titles to the lists (and build up navlist, since it's direct)
 close.innerHTML = 'X';
 timelist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:18px;margin-bottom:4px;'>Timing Report</li>";
+eventlist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:18px;margin-bottom:4px;'>Event Report</li>";
 navlist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:18px;margin-bottom:4px;'>Navigation Report</li>" +
 	"<li style='" + reset + "padding:2px 0 4px 0;'>How you got here: <span style='" + reset + "color:blue;'>" + how + "</span></li>" +
 	"<li style='" + reset + "'>Number of Redirects: <span style='" + reset + "color:blue;'>" + navigation.redirectCount + "</span></li>";
 
 
-// Remove the graph from the page when closing
-close.onclick = function( event ) {
-	document.body.removeChild( root );
+
+// Handle removing report from DOM
+function remove( event ) {
+	if ( root ) {
+		document.body.removeChild( root );
+		document.removeEventListener( 'click', remove, false );
+		eventBlock( event );
+	}
+}
+
+// Shortcutt for stopping event propagation
+function eventBlock( event ) {
 	event.preventDefault();
 	event.stopPropagation();
-};
+}
 
+// Remove report when clicking on close button
+// and anywhere else on the page
+close.onclick = remove;
+root.onclick = eventBlock;
+document.addEventListener( 'click', remove, false );
 
 // Adds timing entries to graph and data list
 function add( entry ) {
@@ -164,7 +207,7 @@ function add( entry ) {
 	console.info( name + ' (' + description + '): ' + length + 'ms' );
 
 	// Spread out entries (only if they exist, and skip previous unload)
-	if ( length > 0 && name != 'Previous Unload' ) {
+	if ( length > 0 ) {
 		step += 22;
 	}
 	else {
@@ -196,9 +239,17 @@ console.info( '---Performance Timing Statistics---' );
 		timing.redirectStart,
 		timing.redirectEnd
 	],
+	// TODO: Pin down when previous unload occurs
 	[
-		'DNS Lookups',
-		'Time spent doing DNS lookups',
+		'Previous Unload',
+		'Time spent in previous pages unload event (has to be same origin)',
+		'#1C9C45',
+		timing.unloadEventStart,
+		timing.unloadEventEnd
+	],
+	[
+		'DNS Lookup',
+		'Time spent doing DNS lookup',
 		'#E271D9',
 		timing.domainLookupStart,
 		timing.domainLookupEnd
@@ -239,8 +290,15 @@ console.info( '---Performance Timing Statistics---' );
 		timing.domLoading
 	],
 	[
-		'DOM Rendering',
-		'Time spent rendering the DOM, before the dom ready event',
+		'DOM Loading',
+		'Time spent between "loading" and "complete" dom readiness',
+		'#047EC5',
+		timing.domLoading,
+		timing.domComplete
+	],
+	[
+		'DOM Interactive',
+		'Time spent between "loading" and "interactive" dom readiness',
 		'#047EC5',
 		timing.domLoading,
 		timing.domInteractive
@@ -265,18 +323,20 @@ console.info( '---Performance Timing Statistics---' );
 		'#22837B',
 		timing.loadEventStart,
 		timing.loadEventEnd
-	],
-	[
-		'Previous Unload',
-		'Time spent in previous pages unload event (has to be same origin)',
-		'#1C9C45',
-		timing.unloadEventStart,
-		timing.unloadEventEnd
 	]
 ].forEach( add );
 
-// Extend the grap the full length
-graph.style.height = step + 'px';
+// List out event report
+order.forEach(function( name ) {
+	var list = document.createElement('li'),
+		pos = timing[ name ] - ( timing.navigationStart || timing.fetchStart );
+
+	list.style.cssText = reset + 'font-size:12px;';
+	list.innerHTML = timing[ name ] ?
+		pos + 'ms - ' + name :
+		"<span style='" + reset + "font-style:italic;font-size:12px;'>undefined - " + name + "</span>";
+	eventlist.appendChild( list );
+});
 
 // Log the navigation results AFTER timing results
 console.info( '---Navigation Report---' );
@@ -286,5 +346,8 @@ console.info( 'Number of Redriects: ' + navigation.redirectCount );
 // For your viewing pleasure
 console.info( '---Performance Object---' );
 console.info( performance );
+
+// Extend the grap the full length
+graph.style.height = step + 'px';
 
 })( this );
