@@ -32,8 +32,8 @@ var version = '0.0.1pre',
 		'unloadEventEnd',
 		'domLoading',
 		'responseEnd',
-		'domContentLoadedEventStart',
 		'domInteractive',
+		'domContentLoadedEventStart',
 		'domContentLoadedEventEnd',
 		'domComplete',
 		'loadEventStart',
@@ -178,8 +178,8 @@ var version = '0.0.1pre',
 	elapsed = timing.loadEventEnd - ( timing.navigationStart || timing.fetchStart ),
 
 	// Style resets
-	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;' +
-		'font-style:inherit;font-size:13px;font-family:inherit;' +
+	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;width:auto;' +
+		'font-style:inherit;font-size:13px;font-family:Times;text-align:left;' +
 		'vertical-align:baseline;color:inherit;line-height:13px;color:black;';
 
 
@@ -187,10 +187,10 @@ var version = '0.0.1pre',
 // Style the wrappers
 root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;' +
 	'z-index:100000;font-size:11px;top:25px;left:' + center + 'px;' +
-	'background:white;box-shadow: 0 0 1em black;border-radius:5px;';
+	'background:white;box-shadow: 0 0 15px black;border-radius:5px;border:1px solid #999;';
 graph.style.cssText = reset + 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;clear:both;';
-timelist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;float:left;width:48%';
-eventlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;float:left;width:51%;';
+timelist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;float:left;width:48%;padding-bottom:10px;';
+eventlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;float:left;width:51%;padding-bottom:10px;';
 navlist.style.cssText = reset + 'list-style:none;margin:10px 0 0;padding:0;clear:both;';
 close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radius:10px;' +
 	'border:2px solid #f5f5f5;color:#f5f5f5;font-size:13px;' +
@@ -365,9 +365,11 @@ markers.forEach(function( entry ) {
 	});
 
 	// Ensure existing stack is sorted in ascending order
+	/* Disabling for now, need to find a safe way to sort
 	exists.sort(function( a, b ) {
 		return timing[ a ] - timing[ b ];
 	});
+	*/
 
 	// Reapply order
 	order = undef.concat( start, exists );
