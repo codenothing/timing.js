@@ -157,7 +157,8 @@ var version = '0.0.1pre',
 
 	// Overlay for eventlist
 	overlay = document.createElement('div'),
-	overlayText = document.createElement('span'),
+	overlayText = document.createElement('div'),
+	overlayHold = false,
 
 	// labels
 	header = document.createElement('h1'),
@@ -180,7 +181,8 @@ var version = '0.0.1pre',
 	// Style resets
 	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;width:auto;' +
 		'font-style:inherit;font-size:13px;font-family:Times;text-align:left;' +
-		'vertical-align:baseline;color:inherit;line-height:13px;color:black;';
+		'vertical-align:baseline;color:inherit;line-height:13px;color:black;' +
+		'opacity:1;';
 
 
 
@@ -199,10 +201,11 @@ close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radi
 
 
 // Style & build the overlay
-overlay.style.cssText = reset + 'position:absolute;border-left:1px solid #E0FA5D;top:0px;left:10px;z-index:100001;display:none;';
-overlayText.style.cssText = reset + 'float:left;padding:3px 8px;font-size:11px;background:#E0FA5D;white-space:nowrap;';
-overlay.appendChild( overlayText );
+overlay.style.cssText = reset + 'position:absolute;border-left:1px solid #E0FA5D;top:0px;z-index:100001;display:none;';
+overlayText.style.cssText = reset + 'position:absolute;top:0px;z-index:100002;padding:3px 8px;' +
+	'font-size:11px;background:#E0FA5D;white-space:nowrap;display:none;';
 graph.appendChild( overlay );
+graph.appendChild( overlayText );
 
 
 // Style the labels
@@ -257,6 +260,7 @@ function escapeKey( event ) {
 
 // Shortcutt for stopping event propagation
 function eventBlock( event ) {
+	overlayHold = false;
 	event.preventDefault();
 	event.stopPropagation();
 }
@@ -376,46 +380,82 @@ markers.forEach(function( entry ) {
 // List out event report
 order.forEach(function( name ) {
 	var list = document.createElement('li'),
-		pos = timing[ name ] - ( timing.navigationStart || timing.fetchStart ),
+		time = timing[ name ] - ( timing.navigationStart || timing.fetchStart ),
+		pos = position( timing[ name ] || 0 ),
 		enter = function(){
 			list.style.backgroundColor = '#E0FA5D';
 
 			// Only open overlay if the entry exists
-			if ( timing[ name ] ) {
-				var mark = position( timing[ name ] );
-				overlayText.innerHTML = pos + 'ms - ' + name;
-				overlay.style.display = 'block';
+			if ( timing[ name ] && overlayHold ) {
+				if ( overlayHold.pos === pos ) {
+					return;
+				}
+				overlay.style.display = overlayText.style.display = 'block';
+				overlay.style.borderRight = overlay.style.borderLeft = '1px solid #E0FA5D';
+				overlay.style.width = ( Math.abs( pos - overlayHold.pos ) - 2 ) + 'px';
+				overlay.style.left = overlayText.style.left = Math.min( pos, overlayHold.pos ) + 'px';
+				overlay.style.opacity = 0.5;
+				overlay.style.backgroundColor = '#E0FA5D';
 
-				if ( ( mark / width ) > 0.5 ) {
-					overlay.style.left = 'auto';
-					overlay.style.right = ( width - mark ) + 'px';
-					overlay.style.borderLeft = 'none';
-					overlay.style.borderRight = '1px solid #E0FA5D';
-					overlayText.style.float = 'right';
-					overlayText.style.textAlign = 'right';
+				// Overlay text
+				overlayText.innerHTML = Math.abs( time - overlayHold.time ) + 'ms: ' + name + ' - ' + overlayHold.name;
+
+				// Positioning the overlay text
+				if ( ( overlayHold.pos / width ) > 0.5 ) {
+					overlayText.style.left = 'auto';
+					overlayText.style.right = ( width - Math.max( pos, overlayHold.pos ) ) + 'px';
 				}
 				else {
-					overlay.style.left = mark + 'px';
+					overlayText.style.right = 'auto';
+					overlayText.style.left = Math.min( pos, overlayHold.pos ) + 'px';
+				}
+			}
+			else if ( timing[ name ] ) {
+				overlayText.innerHTML = time + 'ms - ' + name;
+				overlay.style.display = overlayText.style.display = 'block';
+				overlay.style.opacity = 1;
+				overlay.style.width = 'auto';
+				overlay.style.backgroundColor = 'transparent';
+
+				if ( ( pos / width ) > 0.5 ) {
+					overlay.style.left = overlayText.style.left = 'auto';
+					overlay.style.right = overlayText.style.right = ( width - pos ) + 'px';
+					overlay.style.borderLeft = 'none';
+					overlay.style.borderRight = '1px solid #E0FA5D';
+				}
+				else {
+					overlay.style.right = overlayText.style.right = 'auto';
+					overlay.style.left = overlayText.style.left = pos + 'px';
 					overlay.style.borderRight = 'none';
 					overlay.style.borderLeft = '1px solid #E0FA5D';
-					overlayText.style.float = 'left';
-					overlayText.style.textAlign = 'left';
 				}
+			}
+		},
+		click = function( event ) {
+			if ( timing[ name ] ) {
+				overlayHold = {
+					pos: pos,
+					time: time,
+					name: name
+				};
+				event.stopPropagation();
+				event.preventDefault();
 			}
 		},
 		leave = function(){
 			list.style.backgroundColor = 'transparent';
-			overlay.style.display = 'none';
+			overlay.style.display = overlayText.style.display = 'none';
 		};
 
 	// Add to the event list
-	list.style.cssText = reset + 'font-size:12px;';
+	list.style.cssText = reset + 'font-size:12px;' + ( timing[ name ] ? 'cursor:pointer;' : '' );
 	list.innerHTML = timing[ name ] ?
-		pos + 'ms - ' + name :
+		time + 'ms - ' + name :
 		"<span style='" + reset + "font-style:italic;font-size:12px;'>undefined - " + name + "</span>";
 	eventlist.appendChild( list );
 
 	// Attach hover effects
+	list.addEventListener( 'click', click, false );
 	list.addEventListener( 'mouseover', enter, false );
 	list.addEventListener( 'mouseout', leave, false );
 });
