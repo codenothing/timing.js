@@ -359,7 +359,6 @@ endlabel.innerHTML = 'Load Event End (' + elapsed + 'ms)';
 
 
 // Add everything to the page
-document.body.appendChild( root );
 root.appendChild( header );
 root.appendChild( startlabel );
 root.appendChild( endlabel );
@@ -368,6 +367,7 @@ root.appendChild( timelist );
 root.appendChild( eventlist );
 root.appendChild( navlist );
 root.appendChild( close );
+document.body.appendChild( root );
 
 
 // Add titles to the lists (and build up navlist, since it's direct)

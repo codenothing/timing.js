@@ -14,27 +14,29 @@ Timing.js is a bookmarlet that builds a simple graph showing the differen't inte
 Markers
 =======
 
-- **Page Load**: Full length of page load, includes redirects and onload events
+- **Page Load**: Full length of page load
 
 - **Redirects**: Time spent in redirects
 
-- **DNS Lookups**: Time spent doing DNS lookups
+- **Application Cache Check**: Time spent looking into application caches for the document
 
-- **TCP Connections**: Time spent in TCP connections
+- **DNS Lookup**: Time spent doing DNS lookup
 
-- **Document Download**: Time spent downloading the requested document from the server
+- **TCP Connection**: Time spent in TCP connection
 
-- **Resources**: Time spent getting page resources
+- **Secure TCP Connection**: Time spent setting up Secure TCP connection
 
-- **Resource Content**: Time spent from the first byte downloaded, to the last byte
+- **Sending Request**: Time spent sending request to server for document retrieval
 
-- **Resource Parsing**: Time spent from end of resource download, to start of DOM Rendering
+- **Document Retrieval**: Time spent from the first byte downloaded, till the last
 
-- **DOM Rendering**: Time spent rendering the DOM, before the dom ready event
+- **DOM Loading**: Time spent between "loading" and "complete" DOM Ready states
+
+- **DOM Interactive**: Time spent between "loading" and "interactive" DOM Ready states
 
 - **DOM Ready Event**: Time spent waiting for dom ready events to finish
 
-- **DOM Render Complete**: Time spent rendering after ready events
+- **DOM Complete**: Time spent between end of DOMContentLoaded event and "complete" DOM REady state
 
 - **On Load**: Time spent waiting for the onload event to finish
 
