@@ -20,87 +20,75 @@ var version = '0.0.1pre',
 	order = [
 		[
 			'navigationStart',
-			'????'
+			'Timestamp immediately after prompting to unload the previous document'
 		],
 		[
 			'redirectStart',
-			'????'
+			'Timestamp immediately before the start of the fetch that initiates the redirect'
 		],
 		[
 			'redirectEnd',
-			'????'
+			'Timestamp immediately after receiving the last byte of the response of the last redirect'
 		],
 		[
 			'fetchStart',
-			'????'
+			'Timestamp immediately before checking application cache or fetching the resource'
 		],
 		[
 			'domainLookupStart',
-			'????'
+			'Timestamp immediately before DNS lookup of current document'
 		],
 		[
 			'domainLookupEnd',
-			'????'
+			'Timestamp immediately after DNS lookup of current document'
 		],
 		[
 			'connectStart',
-			'????'
+			'Timestamp immediately before establishing a connection to the server for document retrieval'
 		],
 		[
 			'secureConnectionStart',
-			'????'
+			'Timestamp immediately before starting the handshake process'
 		],
 		[
 			'connectEnd',
-			'????'
+			'Timestamp immediately after establishing a connection to the server for document retrieval'
 		],
 		[
 			'requestStart',
-			'????'
+			'Timestamp immediately before requesting the current document'
 		],
 		[
 			'responseStart',
-			'????'
-		],
-		[
-			'unloadEventStart',
-			'????'
-		],
-		[
-			'unloadEventEnd',
-			'????'
-		],
-		[
-			'domLoading',
-			'????'
+			'Timestamp immediately after recieving the first byte of the current document'
 		],
 		[
 			'responseEnd',
-			'????'
+			'Timestamp immediately after recieving the last byte of the current document'
 		],
 		[
 			'domInteractive',
-			'????'
+			'Timestamp immediately before the document readiness state is changed to "interactive"'
 		],
 		[
 			'domContentLoadedEventStart',
-			'????'
+			'Timestamp immediately before the start of the DOMContentLoaded event'
 		],
 		[
 			'domContentLoadedEventEnd',
-			'????'
+			'Timestamp immediately after the end of the DOMContentLoaded event'
 		],
 		[
 			'domComplete',
-			'????'
+			'Timestamp immediately before the document readiness state is changed to "complete"'
 		],
 		[
 			'loadEventStart',
-			'????'
+			'Timestamp immediately before the start of the load event'
 		],
 		[
 			'loadEventEnd',
-			'????'
+			'Timestamp immediately after the end of the load event'
 		]
 	],
 
@@ -113,6 +101,7 @@ var version = '0.0.1pre',
 			NAV_START,
 			timing.loadEventEnd
 		],
+		/* TODO: What occurs between prompting previous unload page and the start of redirects?
 		[
 			'??navigationStart - redirectStart??',
 			'????',
@@ -120,6 +109,7 @@ var version = '0.0.1pre',
 			timing.navigationStart,
 			timing.redirectStart
 		],
+		*/
 		[
 			'Redirects',
 			'Time spent in redirects',
@@ -127,6 +117,7 @@ var version = '0.0.1pre',
 			timing.redirectStart,
 			timing.redirectEnd
 		],
+		/* TODO: What happens between the end of a redirect and the start of document fetch process?
 		[
 			'??redirectEnd - fetchStart??',
 			'????',
@@ -134,9 +125,10 @@ var version = '0.0.1pre',
 			timing.redirectEnd,
 			timing.fetchStart
 		],
+		*/
 		[
-			'??fetchStart - domainLookupStart??',
-			'????',
+			'Application Cache Check',
+			'Time spent looking into application caches for the document',
 			'#CFCFCF',
 			timing.fetchStart,
 			timing.domainLookupStart
@@ -148,6 +140,7 @@ var version = '0.0.1pre',
 			timing.domainLookupStart,
 			timing.domainLookupEnd
 		],
+		/* TODO: What happens between DNS Lookup and TCP Connection?
 		[
 			'??domainLookupEnd - connectStart??',
 			'????',
@@ -155,20 +148,22 @@ var version = '0.0.1pre',
 			timing.domainLookupEnd,
 			timing.connectStart
 		],
+		*/
 		[
-			'TCP Connections',
-			'Time spent in TCP connections',
+			'TCP Connection',
+			'Time spent in TCP connection',
 			'#DB3543',
 			timing.connectStart,
 			timing.connectEnd
 		],
 		[
-			'Secure TCP Connections (SSL)',
-			'Time spent in Secure TCP connections',
+			'Secure TCP Connection',
+			'Time spent setting up Secure TCP connection',
 			'#8874DA',
 			timing.secureConnectionStart,
 			timing.connectEnd
 		],
+		/* TODO: What happens between established connection and the start of the document request?
 		[
 			'??connectEnd - requestStart??',
 			'????',
@@ -176,38 +171,40 @@ var version = '0.0.1pre',
 			timing.connectEnd,
 			timing.requestStart
 		],
+		*/
 		[
-			'??requestStart - responseEnd??',
-			'????',
+			'Document Request',
+			'Time spent getting the document from the server',
 			'#CFCFCF',
 			timing.requestStart,
 			timing.responseEnd
 		],
-		// TODO: Pin down when previous unload occurs
 		[
-			'Previous Unload',
-			'Time spent in previous pages unload event (has to be same origin)',
-			'#1C9C45',
-			timing.unloadEventStart,
-			timing.unloadEventEnd
+			'Document Retrieval',
+			'Time spent from the first byte downloaded, till the last',
+			'#CFCFCF',
+			timing.responseStart,
+			timing.responseEnd
 		],
+		// TODO: Confirm document object creation is what causes delays between getting retriving the resource and loading the DOM
+		// Ref: http://dev.w3.org/html5/spec/dom.html#current-document-readiness
 		[
-			'??responseEnd - domLoading??',
-			'????',
+			'Document Creation',
+			'Time spent creating the Document Object (This needs confirmation)',
 			'#CFCFCF',
 			timing.responseEnd,
 			timing.domLoading
 		],
 		[
 			'DOM Loading',
-			'Time spent between "loading" and "complete" dom readiness',
+			'Time spent between "loading" and "complete" DOM Ready states',
 			'#047EC5',
 			timing.domLoading,
 			timing.domComplete
 		],
 		[
 			'DOM Interactive',
-			'Time spent between "loading" and "interactive" dom readiness',
+			'Time spent between "loading" and "interactive" DOM Ready states',
 			'#047EC5',
 			timing.domLoading,
 			timing.domInteractive
@@ -221,11 +218,12 @@ var version = '0.0.1pre',
 		],
 		[
 			'DOM Complete',
-			'Time spent between end of DOM Ready Event and "complete" dom readiness',
+			'Time spent between end of DOMContentLoaded event and "complete" DOM REady state',
 			'#FF007B',
 			timing.domContentLoadedEventEnd,
 			timing.domComplete
 		],
+		/* TODO: What causes delay between DOM Complete and the start of the load events?
 		[
 			'??domComplete - loadEventStart??',
 			'????',
@@ -233,6 +231,7 @@ var version = '0.0.1pre',
 			timing.domComplete,
 			timing.loadEventStart
 		],
+		*/
 		[
 			'On Load',
 			'Time spent waiting for the onload event to finish',
@@ -242,9 +241,46 @@ var version = '0.0.1pre',
 		]
 	],
 
+	// Unpredictable entries on the timing object
+	unpredictables = {
+
+		markers: [
+			// The previous unload event can occur anywhere between fetchStart and responseEnd
+			[
+				'Previous Unload',
+				'Time spent in previous pages unload event (has to be same origin)',
+				'#1C9C45',
+				timing.unloadEventStart,
+				timing.unloadEventEnd
+			]
+		],
+
+		events: [
+			// The previous unload event can occur anywhere between fetchStart and responseEnd
+			[
+				'unloadEventStart',
+				'Timestamp immediately before the start of unload events on the previous document'
+			],
+			// The previous unload event can occur anywhere between fetchStart and responseEnd
+			[
+				'unloadEventEnd',
+				'Timestamp immediately after the end of unload events on the previous document'
+			],
+			// The domLoading event can occur anytime after responseStart
+			[
+				'domLoading',
+				'Timestamp immediately before the document readiness state is changed to "loading"'
+			]
+		]
+
+	},
+
 	// Externals
 	document = window.document,
 	console = window.console,
+	log = function( msg ) {
+		console.info( msg );
+	},
 
 	// wrappers
 	root = document.createElement('div'),
@@ -342,6 +378,54 @@ navlist.innerHTML = "<li style='" + reset + "font-weight:bold;font-size:18px;mar
 	"<li style='" + reset + "'>Number of Redirects: <span style='" + reset + "color:blue;'>" + navigation.redirectCount + "</span></li>";
 
 
+// Inject unpredictable markers for graph plotting
+unpredictables.markers.forEach(function( marker ) {
+	var stack = [], start = marker[ 3 ], inject = false;
+
+	// Find an injection point
+	markers.forEach(function( entry, i ) {
+		var next = markers[ i + 1 ];
+		stack.push( entry );
+
+		if ( ! inject && start >= entry[ 3 ] && next && start < next[ 3 ] ) {
+			inject = true;
+			stack.push( marker );
+		}
+	});
+
+	// Not sure how it can get here, but catch it anyway
+	if ( ! inject ) {
+		stack.push( marker );
+	}
+
+	// Assign the new marker stack with the unload event injected correctly
+	markers = stack.slice( 0 );
+});
+
+// Inject unpredictable events into event report
+unpredictables.events.forEach(function( event ) {
+	var stack = [], start = timing[ event[ 0 ] ], inject = false;
+
+	// Find injection point for events order
+	order.forEach(function( entry, i ) {
+		var next = order[ i + 1 ];
+		stack.push( entry );
+
+		if ( ! inject && start >= timing[ entry[ 0 ] ] && next && start < timing[ next[ 0 ] ] ) {
+			inject = true;
+			stack.push( event );
+		}
+	});
+
+	// Not sure how it can get here, but catch it anyway
+	if ( ! inject ) {
+		stack.push( event );
+	}
+
+	// Assign the new order stack with the unload event injected correctly
+	order = stack.slice( 0 );
+});
+
 
 // Handle removing report from DOM
 function remove( event ) {
@@ -381,7 +465,7 @@ function position( time ) {
 
 
 // Add entries based off spec @ http://w3c-test.org/webperf/specs/NavigationTiming/
-console.info( '---Performance Timing Statistics---' );
+log( '---Performance Timing Statistics---' );
 markers.forEach(function( entry ) {
 	var name = entry[ 0 ],
 		description = entry[ 1 ],
@@ -447,7 +531,7 @@ markers.forEach(function( entry ) {
 	timelist.appendChild( row );
 
 	// Log results into the console
-	console.info( name + ' (' + description + '): ' + length + 'ms' );
+	log( name + ' (' + description + '): ' + length + 'ms' );
 
 	// Spread out entries (only if they exist, and skip previous unload)
 	if ( length > 0 ) {
@@ -481,17 +565,12 @@ markers.forEach(function( entry ) {
 		}
 	});
 
-	// Ensure existing stack is sorted in ascending order
-	exists.sort(function( a, b ) {
-		return timing[ a[ 0 ] ] - timing[ b[ 0 ] ];
-	});
-
 	// Reapply order
 	order = undef.concat( start, exists );
 })();
 
 // List out event report
-console.info( '---Event Reporting---' );
+log( '---Event Reporting---' );
 order.forEach(function( entry ) {
 	var list = document.createElement('li'),
 		name = entry[ 0 ],
@@ -570,7 +649,7 @@ order.forEach(function( entry ) {
 	list.title = description;
 	list.innerHTML = timing[ name ] ?
 		time + 'ms - ' + name :
-		"<span style='" + reset + "font-style:italic;font-size:12px;'>undefined - " + name + "</span>";
+		"<span style='" + reset + "font-style:italic;font-size:12px;'>Not Defined - " + name + "</span>";
 	eventlist.appendChild( list );
 
 	// Attach hover effects
@@ -579,21 +658,21 @@ order.forEach(function( entry ) {
 	list.addEventListener( 'mouseout', leave, false );
 
 	// Log to the console
-	console.info( '[' + timing[ name ] + '] ' + name + ' - ' + description );
+	log( '[' + timing[ name ] + '] ' + name + ' - ' + description );
 });
 
 // Log the navigation results AFTER timing results
-console.info( '---Navigation Report---' );
-console.info( 'How you got here: ' + how );
-console.info( 'Number of Redriects: ' + navigation.redirectCount );
+log( '---Navigation Report---' );
+log( 'How you got here: ' + how );
+log( 'Number of Redriects: ' + navigation.redirectCount );
 
-console.info( '---Timing.js Report---' );
-console.info( JSON.stringify( reports ) );
-console.info( reports );
+log( '---Timing.js Report---' );
+log( JSON.stringify( reports ) );
+log( reports );
 
 // For your viewing pleasure
-console.info( '---Performance Object---' );
-console.info( performance );
+log( '---Performance Object---' );
+log( performance );
 
 // Extend the grap the full length
 graph.style.height = step + 'px';
