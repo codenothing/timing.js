@@ -97,7 +97,7 @@ var version = '0.0.1pre',
 		[
 			'Page Load',
 			'Full length of page load',
-			'#58DB46',
+			'#CFCFCF',
 			NAV_START,
 			timing.loadEventEnd
 		],
@@ -113,7 +113,7 @@ var version = '0.0.1pre',
 		[
 			'Redirects',
 			'Time spent in redirects',
-			'#7D46DB',
+			'#CFCFCF',
 			timing.redirectStart,
 			timing.redirectEnd
 		],
@@ -136,7 +136,7 @@ var version = '0.0.1pre',
 		[
 			'DNS Lookup',
 			'Time spent doing DNS lookup',
-			'#E271D9',
+			'#3AABDF',
 			timing.domainLookupStart,
 			timing.domainLookupEnd
 		],
@@ -152,14 +152,14 @@ var version = '0.0.1pre',
 		[
 			'TCP Connection',
 			'Time spent in TCP connection',
-			'#DB3543',
+			'#77C017',
 			timing.connectStart,
 			timing.connectEnd
 		],
 		[
 			'Secure TCP Connection',
 			'Time spent setting up Secure TCP connection',
-			'#8874DA',
+			'#CFCFCF',
 			timing.secureConnectionStart,
 			timing.connectEnd
 		],
@@ -173,21 +173,21 @@ var version = '0.0.1pre',
 		],
 		*/
 		[
-			'Document Request',
-			'Time spent getting the document from the server',
+			'Sending Request',
+			'Time spent sending request to server for document retrieval',
 			'#CFCFCF',
 			timing.requestStart,
-			timing.responseEnd
+			timing.responseStart
 		],
 		[
 			'Document Retrieval',
 			'Time spent from the first byte downloaded, till the last',
-			'#CFCFCF',
+			'#DA5454',
 			timing.responseStart,
 			timing.responseEnd
 		],
-		// TODO: Confirm document object creation is what causes delays between getting retriving the resource and loading the DOM
-		// Ref: http://dev.w3.org/html5/spec/dom.html#current-document-readiness
+		/* TODO: Confirm document object creation is what causes delays between getting retriving the resource and loading the DOM
+		   Ref: http://dev.w3.org/html5/spec/dom.html#current-document-readiness
 		[
 			'Document Creation',
 			'Time spent creating the Document Object (This needs confirmation)',
@@ -195,31 +195,32 @@ var version = '0.0.1pre',
 			timing.responseEnd,
 			timing.domLoading
 		],
+		*/
 		[
 			'DOM Loading',
 			'Time spent between "loading" and "complete" DOM Ready states',
-			'#047EC5',
+			'#CFCFCF',
 			timing.domLoading,
 			timing.domComplete
 		],
 		[
 			'DOM Interactive',
 			'Time spent between "loading" and "interactive" DOM Ready states',
-			'#047EC5',
+			'#CFCFCF',
 			timing.domLoading,
 			timing.domInteractive
 		],
 		[
 			'DOM Ready Event',
 			'Time spent waiting for dom ready events to finish',
-			'#EE8905',
+			'#3C4BEC',
 			timing.domContentLoadedEventStart,
 			timing.domContentLoadedEventEnd
 		],
 		[
 			'DOM Complete',
 			'Time spent between end of DOMContentLoaded event and "complete" DOM REady state',
-			'#FF007B',
+			'#CFCFCF',
 			timing.domContentLoadedEventEnd,
 			timing.domComplete
 		],
@@ -235,7 +236,7 @@ var version = '0.0.1pre',
 		[
 			'On Load',
 			'Time spent waiting for the onload event to finish',
-			'#22837B',
+			'#FF3535',
 			timing.loadEventStart,
 			timing.loadEventEnd
 		]
@@ -249,7 +250,7 @@ var version = '0.0.1pre',
 			[
 				'Previous Unload',
 				'Time spent in previous pages unload event (has to be same origin)',
-				'#1C9C45',
+				'#CFCFCF',
 				timing.unloadEventStart,
 				timing.unloadEventEnd
 			]
