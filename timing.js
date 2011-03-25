@@ -131,7 +131,10 @@ var version = '0.0.1pre',
 			'Time spent looking into application caches for the document',
 			'#CFCFCF',
 			timing.fetchStart,
-			timing.domainLookupStart
+			// If document is retrieved from app cache, then DNS & TCP timestamps are set to fetchStart
+			timing.domainLookupStart != timing.fetchStart ? timing.domainLookupStart :
+				timing.connectStart != timing.fetchStart ? timing.connectStart :
+				timing.requestStart
 		],
 		[
 			'DNS Lookup',
