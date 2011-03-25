@@ -97,7 +97,7 @@ var version = '0.0.1pre',
 		[
 			'Page Load',
 			'Full length of page load',
-			'#CFCFCF',
+			'#01FB1B',
 			NAV_START,
 			timing.loadEventEnd
 		],
@@ -113,7 +113,7 @@ var version = '0.0.1pre',
 		[
 			'Redirects',
 			'Time spent in redirects',
-			'#CFCFCF',
+			'#C8735A',
 			timing.redirectStart,
 			timing.redirectEnd
 		],
@@ -129,7 +129,7 @@ var version = '0.0.1pre',
 		[
 			'Application Cache Check',
 			'Time spent looking into application caches for the document',
-			'#CFCFCF',
+			'#3A64CC',
 			timing.fetchStart,
 			// If document is retrieved from app cache, then DNS & TCP timestamps are set to fetchStart
 			timing.domainLookupStart != timing.fetchStart ? timing.domainLookupStart :
@@ -139,7 +139,7 @@ var version = '0.0.1pre',
 		[
 			'DNS Lookup',
 			'Time spent doing DNS lookup',
-			'#3AABDF',
+			'#E41EEB',
 			timing.domainLookupStart,
 			timing.domainLookupEnd
 		],
@@ -155,14 +155,14 @@ var version = '0.0.1pre',
 		[
 			'TCP Connection',
 			'Time spent in TCP connection',
-			'#77C017',
+			'#D3CD23',
 			timing.connectStart,
 			timing.connectEnd
 		],
 		[
 			'Secure TCP Connection',
 			'Time spent setting up Secure TCP connection',
-			'#CFCFCF',
+			'#24FDA4',
 			timing.secureConnectionStart,
 			timing.connectEnd
 		],
@@ -178,14 +178,14 @@ var version = '0.0.1pre',
 		[
 			'Sending Request',
 			'Time spent sending request to server for document retrieval',
-			'#CFCFCF',
+			'#77C017',
 			timing.requestStart,
 			timing.responseStart
 		],
 		[
 			'Document Retrieval',
 			'Time spent from the first byte downloaded, till the last',
-			'#DA5454',
+			'#084E0A',
 			timing.responseStart,
 			timing.responseEnd
 		],
@@ -202,28 +202,28 @@ var version = '0.0.1pre',
 		[
 			'DOM Loading',
 			'Time spent between "loading" and "complete" DOM Ready states',
-			'#CFCFCF',
+			'#761F83',
 			timing.domLoading,
 			timing.domComplete
 		],
 		[
 			'DOM Interactive',
 			'Time spent between "loading" and "interactive" DOM Ready states',
-			'#CFCFCF',
+			'#109596',
 			timing.domLoading,
 			timing.domInteractive
 		],
 		[
 			'DOM Ready Event',
 			'Time spent waiting for dom ready events to finish',
-			'#3C4BEC',
+			'#43A4EE',
 			timing.domContentLoadedEventStart,
 			timing.domContentLoadedEventEnd
 		],
 		[
 			'DOM Complete',
 			'Time spent between end of DOMContentLoaded event and "complete" DOM REady state',
-			'#CFCFCF',
+			'#E2845B',
 			timing.domContentLoadedEventEnd,
 			timing.domComplete
 		],
@@ -239,7 +239,7 @@ var version = '0.0.1pre',
 		[
 			'On Load',
 			'Time spent waiting for the onload event to finish',
-			'#FF3535',
+			'#FF3300',
 			timing.loadEventStart,
 			timing.loadEventEnd
 		]
@@ -253,7 +253,7 @@ var version = '0.0.1pre',
 			[
 				'Previous Unload',
 				'Time spent in previous pages unload event (has to be same origin)',
-				'#CFCFCF',
+				'#A0C2A4',
 				timing.unloadEventStart,
 				timing.unloadEventEnd
 			]
