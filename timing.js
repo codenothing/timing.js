@@ -365,7 +365,6 @@ endlabel.innerHTML = 'Load Event End (' + elapsed + 'ms)';
 root.appendChild( header );
 root.appendChild( startlabel );
 root.appendChild( endlabel );
-root.appendChild( canvas );
 root.appendChild( graph );
 root.appendChild( timelist );
 root.appendChild( eventlist );
@@ -635,7 +634,8 @@ order.forEach(function( entry ) {
 			}
 		},
 		click = function( event ) {
-			if ( timing[ name ] ) {
+			// Let the root click handler clean up the hold if it exists
+			if ( timing[ name ] && ! overlayHold ) {
 				overlayHold = {
 					pos: pos,
 					time: time,
@@ -655,7 +655,7 @@ order.forEach(function( entry ) {
 	list.title = description;
 	list.innerHTML = timing[ name ] ?
 		time + 'ms - ' + name :
-		"<span style='" + reset + "font-style:italic;font-size:12px;'>Not Defined - " + name + "</span>";
+		"<span style='" + reset + "font-style:italic;font-size:12px;background:transparent;'>Not Defined - " + name + "</span>";
 	eventlist.appendChild( list );
 
 	// Attach hover effects
