@@ -521,7 +521,7 @@ markers.forEach(function( entry ) {
 	
 	// Detail the data entry
 	row.innerHTML = "<span style='" + reset + "border:1px solid black;background:" + color + ";'>&nbsp;&nbsp;&nbsp;&nbsp;</span> " + 
-		name + ": <span style='" + reset + "color:blue;'>" + length + "ms</span>";
+		name + ": <span style='" + reset + "color:blue;background:transparent;'>" + length + "ms</span>";
 	row.title = description;
 	row.style.cssText = reset + 'padding:4px 0;';
 
