@@ -324,7 +324,7 @@ var version = '0.0.1pre',
 	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;width:auto;' +
 		'font-style:inherit;font-size:13px;font-family:Times;text-align:left;' +
 		'vertical-align:baseline;color:inherit;line-height:13px;color:black;' +
-		'opacity:1;list-style:none;background:white;';
+		'opacity:1;list-style:none;background:white;content:none;';
 
 
 
