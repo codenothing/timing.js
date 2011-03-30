@@ -324,7 +324,7 @@ var version = '0.0.1pre',
 	reset = 'margin:0;padding:0;border:0;outline:0;font-weight:inherit;width:auto;' +
 		'font-style:inherit;font-size:13px;font-family:Times;text-align:left;' +
 		'vertical-align:baseline;color:inherit;line-height:13px;color:black;' +
-		'opacity:1;list-style:none;background:white;content:none;';
+		'opacity:1;list-style:none;background:white;content:"" !important;';
 
 
 
@@ -547,7 +547,7 @@ markers.forEach(function( entry ) {
 	}
 });
 
-// We have to ensure organization of events is correct (unload is tricky)
+// We have to ensure organization of events is correct (unload and domLoading are tricky)
 (function(){
 	var undef = [], start = [], exists = [];
 
@@ -576,12 +576,13 @@ markers.forEach(function( entry ) {
 
 // List out event report
 log( '---Event Reporting---' );
-order.forEach(function( entry ) {
+order.forEach(function( entry, i ) {
 	var list = document.createElement('li'),
 		name = entry[ 0 ],
 		description = entry[ 1 ],
 		time = timing[ name ] - NAV_START,
 		pos = position( timing[ name ] || 0 ),
+		slice,
 		enter = function(){
 			list.style.backgroundColor = '#E0FA5D';
 
@@ -596,10 +597,20 @@ order.forEach(function( entry ) {
 				overlay.style.opacity = 0.5;
 				overlay.style.backgroundColor = '#E0FA5D';
 
-				
+				// Apply overlay text
 				overlayText.innerHTML = time > overlayHold.time ?
 					( time - overlayHold.time ) + 'ms: ' + overlayHold.name + '-' + name :
 					( overlayHold.time - time ) + 'ms: ' + name + ' - ' + overlayHold.name;
+
+				// Highlight all list items covered
+				slice = i > overlayHold.i ?
+					order.slice( overlayHold.i,  i + 1 ) :
+					order.slice( i, overlayHold.i + 1 );
+				slice.forEach(function( entry ) {
+					if ( entry[ 2 ] ) {
+						entry[ 2 ].style.backgroundColor = '#E0FA5D';
+					}
+				});
 
 				// Positioning the overlay text
 				if ( ( overlayHold.pos / width ) > 0.5 ) {
@@ -637,6 +648,7 @@ order.forEach(function( entry ) {
 			// Let the root click handler clean up the hold if it exists
 			if ( timing[ name ] && ! overlayHold ) {
 				overlayHold = {
+					i: i,
 					pos: pos,
 					time: time,
 					name: name
@@ -644,11 +656,30 @@ order.forEach(function( entry ) {
 				event.stopPropagation();
 				event.preventDefault();
 			}
+			else {
+				leave();
+				overlayHold = false;
+				enter();
+			}
 		},
 		leave = function(){
 			list.style.backgroundColor = 'transparent';
 			overlay.style.display = overlayText.style.display = 'none';
+
+			// unhighlight all list items covered
+			slice = i > overlayHold.i ?
+				order.slice( overlayHold.i, i + 1 ) :
+				order.slice( i, overlayHold.i + 1 );
+			slice.forEach(function( entry ) {
+				if ( entry[ 2 ] ) {
+					entry[ 2 ].style.backgroundColor = 'transparent';
+				}
+			});
 		};
+
+	// Mark the list element and push back onto saved list
+	list.setAttribute( 'data-name', name );
+	entry.push( list );
 
 	// Add to the event list
 	list.style.cssText = reset + 'font-size:12px;' + ( timing[ name ] ? 'cursor:pointer;' : '' );
