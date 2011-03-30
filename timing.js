@@ -129,7 +129,7 @@ var version = '0.0.1pre',
 		[
 			'Application Cache Check',
 			'Time spent looking into application caches for the document',
-			'#3A64CC',
+			'#5F87EC',
 			timing.fetchStart,
 			// If document is retrieved from app cache, then DNS & TCP timestamps are set to fetchStart
 			timing.domainLookupStart != timing.fetchStart ? timing.domainLookupStart :
@@ -185,7 +185,7 @@ var version = '0.0.1pre',
 		[
 			'Document Retrieval',
 			'Time spent from the first byte downloaded, till the last',
-			'#084E0A',
+			'#1BCA21',
 			timing.responseStart,
 			timing.responseEnd
 		],
@@ -202,7 +202,7 @@ var version = '0.0.1pre',
 		[
 			'DOM Loading',
 			'Time spent between "loading" and "complete" DOM Ready states',
-			'#761F83',
+			'#C51CDF',
 			timing.domLoading,
 			timing.domComplete
 		],
@@ -329,7 +329,7 @@ var version = '0.0.1pre',
 
 
 // Style the wrappers
-root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:fixed;' +
+root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:absolute;' +
 	'z-index:100000;font-size:11px;top:25px;left:' + center + 'px;' +
 	'box-shadow: 0 0 15px black;border-radius:5px;border:1px solid #999;';
 graph.style.cssText = reset + 'background:#1F220E;position:relative;border-radius:5px;overflow:hidden;clear:both;';
@@ -714,5 +714,8 @@ log( performance );
 // Extend the grap the full length
 graph.style.height = step + 'px';
 overlay.style.height = step + 'px';
+
+// Scroll to graph position
+window.scrollTo( 0, 1 );
 
 })( this );
