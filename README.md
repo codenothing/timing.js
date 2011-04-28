@@ -1,17 +1,20 @@
 Timing.js
 =========
-
-Timing.js is a bookmarklet script to graph out the timing reports provided by the browser. It does **absolutely no measuring**,
-just reporting on the browser defined timestamps.
+  
+  
+Timing.js is a bookmarklet script to graph out intervals based on the
+[Navigation Timing API](http://www.w3.org/TR/2011/CR-navigation-timing-20110315/).
+It does **absolutely no measuring**, just reporting on the browser defined timestamps.
+[Go here](http://www.codenothing.com/archives/2011/timingjs/) and drag the link on the
+page to your bookmarks bar.  
+  
+  
+  
+**Note:** Currently only supported in Chrome.
   
   
 ![Timing.js Example](http://www.codenothing.com/demos/2011/timing.js/timing.png "Timing.js Example")
 
-How it works
-============
-
-Timing.js is a bookmarlet that builds a simple graph showing the differen't intervals of time during the page load process.
-[Go here](http://www.codenothing.com/demos/2011/timing.js/) and drag the link on the page to your bookmarks bar. 
 
 Markers
 =======

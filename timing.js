@@ -1,3 +1,8 @@
+/**
+ * Timing.js 0.1.0
+ * April 9, 2011
+ * Corey Hart @ http://www.codenothing.com
+ */
 (function( window, undefined ) {
 
 // Block unsupporting browsers
@@ -6,8 +11,8 @@ if ( ! window.performance || ! window.performance.timing ) {
 }
 
 // Meta
-var version = '0.0.1pre',
-	date = '2011-03-21',
+var version = '0.1.0',
+	date = '2011-04-09',
 
 	// Perf Shortcuts
 	performance = window.performance,
@@ -327,7 +332,6 @@ var version = '0.0.1pre',
 		'opacity:1;list-style:none;background:white;content:"" !important;';
 
 
-
 // Style the wrappers
 root.style.cssText = reset + 'width:' + width + 'px;padding:10px;position:absolute;' +
 	'z-index:100000;font-size:11px;top:25px;left:' + center + 'px;' +
@@ -337,9 +341,9 @@ timelist.style.cssText = reset + 'margin:10px 0 0;float:left;width:48%;padding-b
 eventlist.style.cssText = reset + 'margin:10px 0 0;float:left;width:51%;padding-bottom:10px;';
 navlist.style.cssText = reset + 'margin:10px 0 0;clear:both;';
 close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radius:10px;' +
-	'border:2px solid #f5f5f5;color:#f5f5f5;font-size:13px;' +
+	'border:2px solid #f5f5f5;color:#f5f5f5;' +
 	'font-weight:bold;height:12px;width:12px;padding:1px 0 1px 1px;' +
-	'line-height:13px;background:red;text-align:center;cursor:pointer;box-shadow: 0 0 3px black;';
+	'background:red;text-align:center;cursor:pointer;box-shadow: 0 0 3px black;';
 
 
 // Style & build the overlay

@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Timing Test Page</title>
+	<title>Timing.js Test Page</title>
 </head>
 <body>
 	<h1>Just a test page to pop up the timing bookmarklet</h1>
-	<a href="javascript:(function(){var%20script=document.createElement('script');script.src='timing.js?'+(new%20Date()).getTime();document.body.appendChild(script);})()">Click to pop up</a>
+	<a id='bookmarklet' href="#">Timing.js</a>: Click to popup, or drag to your bookmarks bar.
+
+<script type='text/javascript'>
+	var script = window.location.href.replace( /\/[^\/]*$/, '/' ) + 'timing.js';
+	document.getElementById( 'bookmarklet' ).href = "javascript:(function(){var%20script=document.createElement('script');script.src='" + script + "?'+(new%20Date()).getTime();document.body.appendChild(script);})()";
+</script>
 </body>
 </html>
