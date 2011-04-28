@@ -1,6 +1,6 @@
 /**
- * Timing.js 0.1.0
- * April 9, 2011
+ * Timing.js 0.1.0pre
+ * April 28, 2011
  * Corey Hart @ http://www.codenothing.com
  */
 (function( window, undefined ) {
