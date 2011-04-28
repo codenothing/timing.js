@@ -3,7 +3,9 @@ Timing.js
 
 Timing.js is a bookmarklet script to graph out the timing reports provided by the browser. It does **absolutely no measuring**,
 just reporting on the browser defined timestamps.
-
+  
+  
+![Timing.js Example](http://www.codenothing.com/demos/2011/timing.js/timing.png "Timing.js Example")
 
 How it works
 ============

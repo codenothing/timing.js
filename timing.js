@@ -339,7 +339,7 @@ navlist.style.cssText = reset + 'margin:10px 0 0;clear:both;';
 close.style.cssText = reset + 'position:absolute;right:-7px;top:-7px;border-radius:10px;' +
 	'border:2px solid #f5f5f5;color:#f5f5f5;font-size:13px;' +
 	'font-weight:bold;height:12px;width:12px;padding:1px 0 1px 1px;' +
-	'line-height:13px;background:red;text-align:center;cursor:pointer;';
+	'line-height:13px;background:red;text-align:center;cursor:pointer;box-shadow: 0 0 3px black;';
 
 
 // Style & build the overlay
