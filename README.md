@@ -41,7 +41,7 @@ Markers
 
 - **DOM Ready Event**: Time spent waiting for dom ready events to finish
 
-- **DOM Complete**: Time spent between end of DOMContentLoaded event and "complete" DOM REady state
+- **DOM Complete**: Time spent between end of DOMContentLoaded event and "complete" DOM Ready state
 
 - **On Load**: Time spent waiting for the onload event to finish
 
